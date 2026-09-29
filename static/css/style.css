@@ -75,6 +75,9 @@ img { display: block; max-width: 100%; }
   .back { top: 10px; left: 10px; padding: 4px 14px 4px 4px; border-radius: 999px;
           background: rgba(251, 251, 249, 0.94); box-shadow: 0 1px 6px rgba(0, 0, 0, 0.08); }
 }
+.repo-link { margin: -18px 0 26px; font-size: 13px; }
+.repo-link a { color: var(--grey); }
+.repo-link a:hover { color: var(--ink); }
 .sub { color: var(--grey); margin-bottom: 26px; }
 .section { margin-top: 44px; }
 .section > h2 { color: var(--grey); font-weight: 400; margin-bottom: 8px; }
