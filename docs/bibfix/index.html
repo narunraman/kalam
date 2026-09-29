@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BibFix · Kalam</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Grenze+Gotisch:wght@400..600&display=swap">
+  <link rel="stylesheet" href="/static/css/style.css">
+  <style>.back:not(.on) { opacity: 0; visibility: hidden; }</style>
+</head>
+<body>
+
+
+
+<div class="page">
+  
+  <header class="head home">
+    <a class="wordmark" href="/">Kalam</a>
+    <img class="head-photo" src="/static/img/dunes-wide.jpg" alt="">
+  </header>
+  
+  <a class="back" href="/" aria-label="Back to Kalam">
+    <span class="dot" style="background-image: url('/static/img/dunes-wide.jpg')">
+      <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M9.5 3.5 5 8l4.5 4.5"/></svg></span>
+    <span class="back-word">Kalam</span>
+  </a>
+  
+
+  
+
+  
+    
+  
+
+  
+<div class="project-head">
+  <h1 class="title project">BibFix</h1>
+  <p class="sub">Cleans up your reference list.</p>
+</div>
+
+<p>Reference lists get messy. Some titles are capitalised and some aren't, the same venue is written five
+  different ways, preprints stand in for papers that came out a year ago, and now and then there's a
+  citation that doesn't exist at all because a chatbot made it up.</p>
+<p>BibFix tries to fix all of that in one place. It checks each entry against real records (DBLP and
+  Crossref), not a language model, so every change comes from somewhere you can look up. You get back a
+  plain .bib file and a list of what changed. Keep, undo or edit any of it.</p>
+
+<p class="note">To check a bibliography, run <code>bibfix check refs.bib</code>. The web checker runs
+  on your own machine: from a clone of the tools' repository, <code>uv run academic-tools</code>.</p>
+
+<section class="section">
+  <h2>What it reports</h2>
+  <div class="rows two">
+    <div class="row"><span class="k">Safe</span><span class="v">Same paper; fields added or tidied. Applied by default.</span></div>
+    <div class="row"><span class="k">arXiv</span><span class="v">A preprint replaced by its published version. Applied by default.</span></div>
+    <div class="row"><span class="k">Review</span><span class="v">Title, authors or type differ, so possibly a different paper. Not applied.</span></div>
+    <div class="row"><span class="k">Not found</span><span class="v">Neither DBLP nor Crossref knows it. Check that it exists.</span></div>
+    <div class="row"><span class="k">Duplicate</span><span class="v">One paper cited under several keys.</span></div>
+  </div>
+</section>
+
+<section class="section">
+  <h2>Install</h2>
+<pre class="code lang-sh"><span class="ln"><span class="hl-cmd">uv</span> tool install <span class="hl-str">git+https://github.com/narunraman/bibfix</span><button type="button" class="cp" data-copy="uv tool install git+https://github.com/narunraman/bibfix">copy</button></span><span class="ln"><span class="hl-cmd">bibfix</span> dblp-update      <span class="hl-com"># downloads DBLP; rerun monthly</span><button type="button" class="cp" data-copy="bibfix dblp-update">copy</button></span></pre>
+</section>
+
+<section class="section">
+  <h2>Use</h2>
+<pre class="code lang-sh"><span class="ln"><span class="hl-cmd">bibfix</span> check <span class="hl-str">refs.bib</span> <span class="hl-flag">--tex</span> <span class="hl-str">main.tex</span>  <span class="hl-com"># report only</span><button type="button" class="cp" data-copy="bibfix check refs.bib --tex main.tex">copy</button></span><span class="ln"><span class="hl-cmd">bibfix</span> fix <span class="hl-str">refs.bib</span> <span class="hl-flag">-i</span>                <span class="hl-com"># apply the safe and arXiv fixes</span><button type="button" class="cp" data-copy="bibfix fix refs.bib -i">copy</button></span></pre>
+  <p class="grey">With Zotero: <code>bibfix sync</code>, <code>bibfix push</code> and <code>bibfix add</code>.</p>
+</section>
+
+
+  <footer class="foot">
+    <p>Photographs by Narun Raman.</p>
+  </footer>
+</div>
+<script>
+// copy one line of code; the button says "copied" until the next click elsewhere
+document.addEventListener("click", function (e) {
+  var b = e.target.closest && e.target.closest("button.cp");
+  if (!b) return;
+  navigator.clipboard.writeText(b.getAttribute("data-copy")).then(function () {
+    document.querySelectorAll("button.cp.done").forEach(function (x) { x.classList.remove("done"); x.textContent = "copy"; });
+    b.classList.add("done"); b.textContent = "copied";
+  });
+});
+</script>
+<script>
+// project pages: as the header scrolls away the photo slides left across the wordmark, and once
+// the header is gone a small "back to Kalam" mark appears top left
+(function () {
+  var back = document.querySelector(".back"), head = document.querySelector(".head.home");
+  if (!back || !head) return;
+  var photo = head.querySelector(".head-photo"), word = head.querySelector(".wordmark");
+  var still = window.matchMedia("(prefers-reduced-motion: reduce)");
+  var queued = false;
+  function update() {
+    queued = false;
+    var bottom = head.getBoundingClientRect().bottom, end = bottom + window.scrollY;
+    var p = Math.min(1, Math.max(0, window.scrollY / end));
+    photo.style.transform = still.matches ? "" : "translateX(" + (-p * word.offsetWidth).toFixed(1) + "px)";
+    back.classList.toggle("on", bottom < 0);
+  }
+  window.addEventListener("scroll", function () { if (!queued) { queued = true; requestAnimationFrame(update); } }, { passive: true });
+  window.addEventListener("resize", update);
+  update();
+})();
+</script>
+
+</body>
+</html>

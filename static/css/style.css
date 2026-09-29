@@ -1,0 +1,225 @@
+/* academic-tools. One quiet column; one small photograph per page, set in the margin.
+   Static by design: no transitions, animations, sticky elements or scroll effects. */
+
+:root {
+  color-scheme: light;
+  --bg: #fbfbf9;
+  --ink: #141414;
+  --grey: #8b8b86;
+  --rule: #e6e6e1;
+  --wash: #f1f1ed;
+  --col: 580px;
+  --wide: 900px;
+  --sans: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --cerulean: #0a73a0; --salmon: #d0604c; --moss: #5c7233;
+  --del: #9f1c20; --del-bg: #f8eceb;
+  --add: #22662f; --add-bg: #ebf3ec;
+}
+
+* { box-sizing: border-box; }
+html { background: var(--bg); }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.6 var(--sans); -webkit-font-smoothing: antialiased; }
+a { color: var(--ink); text-decoration: none; }
+p a, .sub a, .group-help a { font-weight: 500; }
+a:hover { color: var(--grey); }
+p { margin: 0 0 14px; }
+h1, h2, h3 { font-size: inherit; font-weight: 500; margin: 0; }
+code, pre, kbd { font-family: var(--mono); font-size: 12.5px; }
+img { display: block; max-width: 100%; }
+.grey { color: var(--grey); }
+
+/* page ---------------------------------------------------------------------- */
+.page { position: relative; width: min(var(--col), 100% - 40px); margin: 0 auto; padding: 72px 0 96px; }
+.page.wide { width: min(var(--wide), 100% - 40px); }
+/* Cloister Black (Morris Fuller Benton, 1904; digital revival by Dieter Steffmann) is used when
+   static/fonts/CloisterBlack.ttf is present; Grenze Gotisch (Google Fonts) stands in otherwise. */
+@font-face { font-family: "Cloister Black"; src: url("../fonts/CloisterBlack.ttf") format("truetype"); font-display: swap; }
+.row .name, .title.project { font-family: "Cloister Black", "Grenze Gotisch", Georgia, serif; font-weight: 400; }
+
+/* wordmark: a big soft serif that hangs out to the left of the column */
+.head { margin-bottom: 40px; }
+.wordmark {
+  display: inline-block; font-family: var(--sans); font-weight: 400; color: var(--ink);
+  letter-spacing: -0.035em; line-height: 0.95; font-size: 44px;
+}
+.head.home { display: flex; align-items: center; background: var(--bg); isolation: isolate; }
+.head.home .wordmark { font-size: 100px; flex: none; position: relative; z-index: 1; color: #fff; mix-blend-mode: difference; }
+.head-photo { width: 580px; max-width: none; aspect-ratio: 10 / 3; object-fit: cover; margin-left: -54px; position: relative; z-index: 0; }
+.wordmark:hover { color: var(--ink); }
+@media (min-width: 1000px) {
+  .head .wordmark { margin-left: -64px; }
+  /* outdent the whole header (not just the word) so its background sits behind every letter */
+  .head.home { margin-left: -84px; width: calc(100% + 84px); }
+  .head.home .wordmark { margin-left: 0; }
+}
+
+.title { margin-bottom: 2px; }
+.title.project { font-size: 30px; line-height: 1; margin-bottom: 8px; }
+.project-head { position: relative; }
+
+/* project pages: a fixed "back to Kalam" mark, top left, shown once the header has scrolled away */
+.back { position: fixed; top: 18px; left: max(24px, 50% - var(--col) / 2 - 136px);  /* ends ~40px short of the text column */
+        z-index: 10; display: flex; align-items: center; gap: 9px;
+        color: var(--ink); font-family: var(--sans); font-size: 19px; letter-spacing: -0.03em;
+        opacity: 0; visibility: hidden; transition: opacity 0.15s, visibility 0.15s; }
+.back.on { opacity: 1; visibility: visible; }
+.back:hover { color: var(--ink); }
+.back .dot { width: 34px; height: 34px; border-radius: 50%; background-size: cover; background-position: center;
+             display: grid; place-items: center; box-shadow: inset 0 0 0 20px rgba(0, 0, 0, 0.18); }
+.back .dot svg { width: 16px; height: 16px; fill: none; stroke: #fff; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.back:hover .dot { filter: brightness(0.85); }
+@media (prefers-reduced-motion: reduce) { .back { transition: none; } }
+/* on a phone the mark floats over the text, so it gets a small backing (a pill, not a bar) */
+@media (max-width: 640px) {
+  .back { top: 10px; left: 10px; padding: 4px 14px 4px 4px; border-radius: 999px;
+          background: rgba(251, 251, 249, 0.94); box-shadow: 0 1px 6px rgba(0, 0, 0, 0.08); }
+}
+.sub { color: var(--grey); margin-bottom: 26px; }
+.section { margin-top: 44px; }
+.section > h2 { color: var(--grey); font-weight: 400; margin-bottom: 8px; }
+.section > h2.lead { color: var(--ink); }
+
+/* the list: the thing to look at ------------------------------------------------ */
+.rows { border-top: 1px solid var(--rule); }
+.row { display: grid; grid-template-columns: 7.5em minmax(0, 1fr) auto; gap: 16px; padding: 9px 0; border-bottom: 1px solid var(--rule); align-items: baseline; }
+.row .k { color: var(--grey); }
+a.row { color: var(--ink); }
+a.row:hover { color: var(--ink); }
+.rows.linked:hover .row { color: #c4c4be; }
+.rows.linked:hover .row img { opacity: 0.35; }
+.rows.linked .row:hover, .rows.linked .row:hover .k { color: var(--ink); }
+.rows.linked .row:hover img { opacity: 1; }
+.rows.tools .row { grid-template-columns: 11em minmax(0, 1fr); gap: 16px; padding: 14px 0; align-items: baseline; }
+.row .name { font-size: 22px; line-height: 1; }
+.row.muted, .row.muted a { color: var(--grey); }
+.rows.two .row { grid-template-columns: 7.5em minmax(0, 1fr); }
+
+/* photographs in the margin ------------------------------------------------------ */
+.plate { margin: 0 0 28px; }
+.plate img { width: 100%; }
+.plate figcaption { color: var(--grey); font-size: 11px; line-height: 1.4; margin-top: 6px; }
+@media (min-width: 1100px) {
+  .plate { position: absolute; margin: 0; }
+  .plate.left-high   { width: 196px; right: calc(100% + 64px); top: 250px; }
+  .plate.right-title { width: 150px; left: calc(100% + 72px); top: 150px; }
+  .plate.right-low   { width: 240px; left: calc(100% + 56px); top: 420px; }
+  .plate.left-low    { width: 170px; right: calc(100% + 80px); top: 360px; }
+}
+.plate.left-high img { aspect-ratio: 3 / 4; object-fit: cover; }
+.plate.right-title img { aspect-ratio: 2 / 3; object-fit: cover; }
+.plate.right-low img { aspect-ratio: 16 / 9; object-fit: cover; }
+.plate.left-low img { aspect-ratio: 1 / 1; object-fit: cover; }
+
+/* code ------------------------------------------------------------------- */
+pre { margin: 0 0 14px; padding: 12px 14px; background: var(--wash); overflow-x: auto; line-height: 1.6; border-radius: 3px;
+      white-space: pre-wrap; overflow-wrap: anywhere; }
+.wide pre { white-space: pre; overflow-wrap: normal; }
+p code, li code { background: var(--wash); padding: 1px 4px; border-radius: 3px; }
+
+/* controls ---------------------------------------------------------------------- */
+.btn, button.btn {
+  display: inline-block; font: 13px/1 var(--sans); padding: 8px 13px; border-radius: 4px; cursor: pointer;
+  background: var(--ink); color: var(--bg); border: 1px solid var(--ink); text-decoration: none;
+}
+.btn.quiet { background: transparent; color: var(--ink); border-color: #cfcfc9; }
+.btn:disabled { opacity: 0.35; cursor: default; }
+.actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 18px 0; }
+.link-button { background: none; border: 0; padding: 0; font: inherit; color: var(--grey); cursor: pointer; }
+.link-button:hover { color: var(--ink); }
+
+.drop { display: block; border: 1px dashed #bdbdb7; border-radius: 4px; padding: 38px 16px; text-align: center; cursor: pointer; color: var(--grey); }
+.drop input[type=file] { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.drop.drag, .drop:hover { border-color: var(--ink); color: var(--ink); }
+.drop .file { display: block; margin-top: 4px; font-size: 12px; }
+textarea { display: block; width: 100%; border: 1px solid var(--rule); border-radius: 4px; padding: 10px 12px; background: #fff;
+           font: 12.5px/1.5 var(--mono); resize: vertical; margin-top: 6px; }
+textarea:disabled { background: var(--wash); color: var(--grey); }
+label.check { display: block; margin: 6px 0; }
+input[type=checkbox] { accent-color: var(--ink); margin: 0 8px 0 0; vertical-align: -1px; }
+
+.note { padding: 10px 12px; background: var(--wash); border-radius: 4px; margin: 0 0 18px; }
+.note.error { background: var(--del-bg); color: var(--del); }
+.tag { display: inline-block; font-size: 11px; line-height: 1.5; padding: 0 6px; border: 1px solid #d6d6d0; border-radius: 3px; color: var(--grey); margin-left: 6px; }
+.tag.warn { border-color: var(--del); color: var(--del); }
+
+.bar { height: 2px; background: var(--rule); margin: 22px 0 10px; }
+.bar > div { height: 2px; background: var(--ink); }
+
+/* bibfix review ------------------------------------------------------------------------ */
+.counts { display: flex; flex-wrap: wrap; gap: 6px 22px; margin: 6px 0 22px; }
+.counts a { color: var(--grey); }
+.counts a:hover { color: var(--ink); }
+.counts b { font-weight: 500; }
+.toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 12px 0; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
+.toolbar .selected { margin-right: auto; color: var(--grey); }
+.group { margin-top: 40px; }
+.group-head { display: flex; justify-content: space-between; align-items: baseline; gap: 14px; padding-bottom: 6px; border-bottom: 1px solid var(--rule); }
+.group-head h2 { font-weight: 500; }
+.group-head .bulk { display: flex; gap: 14px; color: var(--grey); }
+.group-help { color: var(--grey); margin: 8px 0 4px; }
+.entry { padding: 14px 0; border-bottom: 1px solid var(--rule); }
+.entry-head { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 6px; }
+.entry-head label { font: 13px var(--mono); cursor: pointer; }
+.entry:has(input:not(:checked)) .diffs { opacity: 0.45; }
+.diffs { display: grid; grid-template-columns: 8.5em minmax(0, 1fr) minmax(0, 1fr); gap: 2px 12px; font: 12px/1.5 var(--mono); }
+.diffs > div { display: contents; }
+.diffs .f { color: var(--grey); }
+.diffs .o, .diffs .p { white-space: pre-wrap; word-break: break-word; padding: 0 5px; border-radius: 2px; }
+.diffs .changed .o, .diffs .removed .o { background: var(--del-bg); color: var(--del); }
+.diffs .changed .p, .diffs .added .p { background: var(--add-bg); color: var(--add); }
+details { margin-top: 6px; }
+summary { cursor: pointer; color: var(--grey); font-size: 12px; }
+.pair { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; margin-top: 8px; }
+.keys { font: 12.5px/2 var(--mono); }
+
+/* footer ----------------------------------------------------------------------------------- */
+.foot { margin-top: 64px; padding-top: 14px; border-top: 1px solid var(--rule); color: var(--grey); font-size: 12px; }
+.foot p { margin: 0 0 6px; }
+.foot a { color: var(--grey); font-weight: 400; }
+.foot a:hover { color: var(--ink); }
+.go { display: inline-block; margin: 4px 0 26px; }
+
+@media (max-width: 640px) {
+  .page { padding-top: 40px; }
+  /* same header as on a wide screen, scaled to the phone: the photo overlaps the end of the
+     wordmark by the same proportion (54% of the font size) */
+  .head.home .wordmark { font-size: 16vw; }
+  .head-photo { width: 58vw; margin-left: -8.6vw; }
+  .row, .rows.two .row, .rows.tools .row { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+  .diffs, .pair { grid-template-columns: minmax(0, 1fr); }
+}
+
+a.btn:hover { color: var(--bg); background: #3a3a38; border-color: #3a3a38; }
+a.btn.quiet:hover, .btn.quiet:hover { color: var(--ink); background: var(--wash); }
+
+/* code: highlighted lines, each with its own copy button ---------------------------------- */
+pre.code { padding: 10px 0; white-space: pre; overflow-x: auto; }
+pre.code .ln { display: block; position: relative; padding: 0 64px 0 14px; min-height: 1.6em; }
+pre.code .ln:hover { background: #e9e9e4; }
+pre.code .cp { position: absolute; right: 8px; top: 0; visibility: hidden; background: none; border: 0; padding: 0 2px;
+               font: 11px/1.6 var(--sans); color: var(--grey); cursor: pointer; }
+pre.code .ln:hover .cp, pre.code .cp.done { visibility: visible; }
+pre.code .cp:hover, pre.code .cp.done { color: var(--ink); }
+pre.code.lang-py { max-height: 520px; }
+.hl-cmd, .hl-kw { color: var(--cerulean); }
+.hl-fn, .hl-flag { color: var(--moss); }
+.hl-str, .hl-num { color: var(--salmon); }
+.hl-com { color: #9c9c95; font-style: italic; }
+
+/* ClusterScheduler page: three clusters shown as a small terminal readout */
+.term { background: var(--wash); color: var(--ink); border-radius: 3px; font: 12.5px/1.55 var(--mono); padding: 14px 18px;
+        margin: 20px 0 26px; overflow-x: auto; }
+.term .t-block { white-space: pre; }
+.term .t-block + .t-block { margin-top: 12px; }
+.term .t-h, .term b { color: var(--ink); font-weight: 700; }
+.term .t-ok { color: #178a6f; }
+.term .t-warn { color: #b86e0b; }
+.term .t-dim { color: var(--grey); }
+/* dotted bars, like a terminal's shaded block characters */
+.term .t-bar { display: inline-block; width: 18ch; height: 0.95em; vertical-align: -0.12em; position: relative;
+               background: radial-gradient(circle, #c9c9c2 0.6px, transparent 0.9px) 0 0 / 3px 3px; }
+.term .t-bar i { position: absolute; inset: 0 auto 0 0; }
+.term .t-bar i.ok { background: radial-gradient(circle, #1f9c7e 1px, transparent 1.3px) 0 0 / 3px 3px; }
+.term .t-bar i.warn { background: radial-gradient(circle, #d9870f 1px, transparent 1.3px) 0 0 / 3px 3px; }
+@media (max-width: 640px) { .term { font-size: 11px; padding: 12px 12px; } .term .t-bar { width: 12ch; } }

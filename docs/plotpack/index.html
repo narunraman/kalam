@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Plotpack · Kalam</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Grenze+Gotisch:wght@400..600&display=swap">
+  <link rel="stylesheet" href="/static/css/style.css">
+  <style>.back:not(.on) { opacity: 0; visibility: hidden; }</style>
+</head>
+<body>
+
+
+
+<div class="page">
+  
+  <header class="head home">
+    <a class="wordmark" href="/">Kalam</a>
+    <img class="head-photo" src="/static/img/islands-wide.jpg" alt="">
+  </header>
+  
+  <a class="back" href="/" aria-label="Back to Kalam">
+    <span class="dot" style="background-image: url('/static/img/islands-wide.jpg')">
+      <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M9.5 3.5 5 8l4.5 4.5"/></svg></span>
+    <span class="back-word">Kalam</span>
+  </a>
+  
+
+  
+
+  
+    
+  
+
+  
+<div class="project-head">
+  <h1 class="title project">Plotpack</h1>
+  <p class="sub">Figures that remember how they were made.</p>
+</div>
+
+<p>You open a figure from a paper you wrote last year and need to add one more point. The data is
+  somewhere: an old notebook, a cluster you've lost access to, a folder called <code>final_v3</code>. It
+  would be much easier if the figure just carried its data with it.</p>
+<p>The proper fix is an image format that stores and describes its own data. I'm not here to invent
+  one. Plotpack is the hacky version: PNG, SVG and PDF all have room for extra bytes, so it tucks the
+  data, the script and the git commit inside the file. The image still opens anywhere as normal.</p>
+<p>Then it does a bit more than that. Read a table back with one line of Python, unpack everything into
+  a folder, or run <code>plotpack inspect</code> on any figure to see what's inside.</p>
+
+<section class="section">
+  <h2>Install</h2>
+<pre class="code lang-sh"><span class="ln"><span class="hl-cmd">uv</span> add <span class="hl-str">git+https://github.com/narunraman/plotpack</span><button type="button" class="cp" data-copy="uv add git+https://github.com/narunraman/plotpack">copy</button></span></pre>
+</section>
+
+<section class="section">
+  <h2>Use</h2>
+<pre class="code lang-py"><span class="ln"><span class="hl-kw">import</span> <span class="hl-fn">plotpack</span><button type="button" class="cp" data-copy="import plotpack">copy</button></span><span class="ln"> </span><span class="ln"><span class="hl-com"># instead of fig.savefig</span><button type="button" class="cp" data-copy="# instead of fig.savefig">copy</button></span><span class="ln">plotpack.<span class="hl-fn">save</span>(fig, <span class="hl-str">"</span><span class="hl-str">fig3</span><span class="hl-str">"</span>, data={<span class="hl-str">"</span><span class="hl-str">curves</span><span class="hl-str">"</span>: df, <span class="hl-str">"</span><span class="hl-str">ci</span><span class="hl-str">"</span>: ci})<button type="button" class="cp" data-copy="plotpack.save(fig, &quot;fig3&quot;, data={&quot;curves&quot;: df, &quot;ci&quot;: ci})">copy</button></span><span class="ln"> </span><span class="ln"><span class="hl-com"># a year later</span><button type="button" class="cp" data-copy="# a year later">copy</button></span><span class="ln">plotpack.<span class="hl-fn">read_table</span>(<span class="hl-str">"</span><span class="hl-str">figures/fig3.pdf</span><span class="hl-str">"</span>, <span class="hl-str">"</span><span class="hl-str">ci</span><span class="hl-str">"</span>)<button type="button" class="cp" data-copy="plotpack.read_table(&quot;figures/fig3.pdf&quot;, &quot;ci&quot;)">copy</button></span></pre>
+<pre class="code lang-sh"><span class="ln"><span class="hl-cmd">plotpack</span> unpack <span class="hl-str">figures/fig3.pdf</span> <span class="hl-str">recovered/</span><button type="button" class="cp" data-copy="plotpack unpack figures/fig3.pdf recovered/">copy</button></span></pre>
+</section>
+
+<section class="section">
+  <h2>What goes inside</h2>
+  <div class="rows two">
+    <div class="row"><span class="k"><code>data/</code></span><span class="v">The plotted tables, as CSV, .npy or JSON.</span></div>
+    <div class="row"><span class="k"><code>source/</code></span><span class="v">The script or notebook that made the figure.</span></div>
+    <div class="row"><span class="k"><code>manifest</code></span><span class="v">Git commit, Python packages, parameters and a hash of each table.</span></div>
+  </div>
+  <p class="grey">Only data and plain text, never pickled objects. Nothing inside is ever run.</p>
+  <p>The calling script or identified notebook is included by default. Notebook outputs and
+    metadata are removed. Check the source and data before sharing, or omit source and git
+    provenance with <code>source=False, include_git=False</code>.</p>
+</section>
+
+
+  <footer class="foot">
+    <p>Photographs by Narun Raman.</p>
+  </footer>
+</div>
+<script>
+// copy one line of code; the button says "copied" until the next click elsewhere
+document.addEventListener("click", function (e) {
+  var b = e.target.closest && e.target.closest("button.cp");
+  if (!b) return;
+  navigator.clipboard.writeText(b.getAttribute("data-copy")).then(function () {
+    document.querySelectorAll("button.cp.done").forEach(function (x) { x.classList.remove("done"); x.textContent = "copy"; });
+    b.classList.add("done"); b.textContent = "copied";
+  });
+});
+</script>
+<script>
+// project pages: as the header scrolls away the photo slides left across the wordmark, and once
+// the header is gone a small "back to Kalam" mark appears top left
+(function () {
+  var back = document.querySelector(".back"), head = document.querySelector(".head.home");
+  if (!back || !head) return;
+  var photo = head.querySelector(".head-photo"), word = head.querySelector(".wordmark");
+  var still = window.matchMedia("(prefers-reduced-motion: reduce)");
+  var queued = false;
+  function update() {
+    queued = false;
+    var bottom = head.getBoundingClientRect().bottom, end = bottom + window.scrollY;
+    var p = Math.min(1, Math.max(0, window.scrollY / end));
+    photo.style.transform = still.matches ? "" : "translateX(" + (-p * word.offsetWidth).toFixed(1) + "px)";
+    back.classList.toggle("on", bottom < 0);
+  }
+  window.addEventListener("scroll", function () { if (!queued) { queued = true; requestAnimationFrame(update); } }, { passive: true });
+  window.addEventListener("resize", update);
+  update();
+})();
+</script>
+
+</body>
+</html>

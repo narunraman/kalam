@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ClusterScheduler · Kalam</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Grenze+Gotisch:wght@400..600&display=swap">
+  <link rel="stylesheet" href="/static/css/style.css">
+  <style>.back:not(.on) { opacity: 0; visibility: hidden; }</style>
+</head>
+<body>
+
+
+
+<div class="page">
+  
+  <header class="head home">
+    <a class="wordmark" href="/">Kalam</a>
+    <img class="head-photo" src="/static/img/scooter-wide.jpg" alt="">
+  </header>
+  
+  <a class="back" href="/" aria-label="Back to Kalam">
+    <span class="dot" style="background-image: url('/static/img/scooter-wide.jpg')">
+      <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M9.5 3.5 5 8l4.5 4.5"/></svg></span>
+    <span class="back-word">Kalam</span>
+  </a>
+  
+
+  
+
+  
+    
+  
+
+  
+<div class="project-head">
+  <h1 class="title project">ClusterScheduler</h1>
+  <p class="sub">Sends your job to whichever cluster will start it soonest.</p>
+</div>
+
+<p>You might have time on a few clusters.</p>
+
+<div class="term" role="img" aria-label="Three clusters: alder is nearly full with a long queue, hemlock has GPUs free, spruce is in between">
+  
+  
+  <div class="t-block"><span class="t-h">» alder</span>
+  Queue: <b>1787</b> (<span class="t-ok">1447 running</span>, <span class="t-warn">340 pending</span>)
+  GPUs:  <span class="t-bar"><i class="warn" style="width: 97%"></i></span> 97% (950/980 · <span class="t-warn">30 free</span>)
+  <span class="t-dim">Jobs like yours waited</span> <span class="t-warn">~6h</span></div>
+  
+  
+  <div class="t-block"><span class="t-h">» hemlock</span>
+  Queue: <b>224</b> (<span class="t-ok">212 running</span>, <span class="t-ok">12 pending</span>)
+  GPUs:  <span class="t-bar"><i class="ok" style="width: 61%"></i></span> 61% (380/620 · <span class="t-ok">240 free</span>)
+  <span class="t-dim">Jobs like yours waited</span> <span class="t-ok">~20m</span></div>
+  
+  
+  <div class="t-block"><span class="t-h">» spruce</span>
+  Queue: <b>1030</b> (<span class="t-ok">890 running</span>, <span class="t-warn">140 pending</span>)
+  GPUs:  <span class="t-bar"><i class="warn" style="width: 88%"></i></span> 88% (860/980 · <span class="t-warn">120 free</span>)
+  <span class="t-dim">Jobs like yours waited</span> <span class="t-warn">~2h</span></div>
+</div>
+
+<p>Picking one to send your job to means knowing things about each: how busy it is right now, how long
+  jobs like yours usually wait, whether it even has the GPUs you need. Wouldn't it be nice not to have
+  to think about any of that?</p>
+<p>You don't have to. <code>rclust</code> reads the <code>#SBATCH</code> lines at the top of your job script, like these:</p>
+<pre class="code lang-sh"><span class="ln"><span class="hl-com">#!/bin/bash</span></span><span class="ln"><span class="hl-cmd">#SBATCH</span> <span class="hl-flag">--gpus-per-node=2</span>    <span class="hl-com"># two GPUs</span></span><span class="ln"><span class="hl-cmd">#SBATCH</span> <span class="hl-flag">--mem=64G</span></span><span class="ln"><span class="hl-cmd">#SBATCH</span> <span class="hl-flag">--time=12:00:00</span>      <span class="hl-com"># for up to 12 hours</span></span><span class="ln"><span class="hl-cmd">python</span> <span class="hl-str">train.py</span></span></pre>
+<p>It skips the clusters that can't run it, asks the rest when a two-GPU, twelve-hour job would start,
+  and submits it to the soonest.</p>
+
+<p>Some clusters require two-factor authentication for each new SSH connection.
+  <code>rclust</code> reuses authenticated connections, so you complete authentication once per
+  cluster and subsequent checks reuse that connection until it expires.</p>
+
+<section class="section">
+  <h2>Choosing a cluster</h2>
+  <div class="rows two">
+    <div class="row"><span class="k">history</span><span class="v">Where jobs like yours have started soonest over the past week, unless a cluster can start it right now. The default, once you've run <code>rclust learn</code>.</span></div>
+    <div class="row"><span class="k">earliest</span><span class="v">The soonest start by Slurm's own estimate.</span></div>
+    <div class="row"><span class="k">balanced</span><span class="v">Favours clusters where your fairshare is high and the queue is light.</span></div>
+  </div>
+</section>
+
+<section class="section">
+  <h2>Install</h2>
+<pre class="code lang-sh"><span class="ln"><span class="hl-cmd">uv</span> tool install <span class="hl-str">git+https://github.com/narunraman/rclust</span><button type="button" class="cp" data-copy="uv tool install git+https://github.com/narunraman/rclust">copy</button></span><span class="ln"><span class="hl-cmd">rclust</span> config        <span class="hl-com"># add your clusters</span><button type="button" class="cp" data-copy="rclust config">copy</button></span><span class="ln"><span class="hl-cmd">rclust</span> discover      <span class="hl-com"># lists each one's GPUs, to paste into the config</span><button type="button" class="cp" data-copy="rclust discover">copy</button></span></pre>
+  <p class="grey">Settings live in <code>~/.config/rclust/config.yaml</code>, or wherever <code>--config</code> or <code>$RCLUST_CONFIG</code> points.</p>
+</section>
+
+<section class="section">
+  <h2>Use</h2>
+<pre class="code lang-sh"><span class="ln"><span class="hl-cmd">rclust</span> connect <span class="hl-flag">--persist</span> 8h                <span class="hl-com"># authenticate once per cluster</span><button type="button" class="cp" data-copy="rclust connect --persist 8h">copy</button></span><span class="ln"><span class="hl-cmd">rclust</span> learn                              <span class="hl-com"># how long jobs have been waiting</span><button type="button" class="cp" data-copy="rclust learn">copy</button></span><span class="ln"><span class="hl-cmd">rclust</span> suggest <span class="hl-flag">--gpus</span> 2 <span class="hl-flag">--time</span> 12:00:00   <span class="hl-com"># where would it go?</span><button type="button" class="cp" data-copy="rclust suggest --gpus 2 --time 12:00:00">copy</button></span><span class="ln"><span class="hl-cmd">rclust</span> submit <span class="hl-str">train.sh</span>                    <span class="hl-com"># send it there</span><button type="button" class="cp" data-copy="rclust submit train.sh">copy</button></span></pre>
+</section>
+
+
+  <footer class="foot">
+    <p>Photographs by Narun Raman.</p>
+  </footer>
+</div>
+<script>
+// copy one line of code; the button says "copied" until the next click elsewhere
+document.addEventListener("click", function (e) {
+  var b = e.target.closest && e.target.closest("button.cp");
+  if (!b) return;
+  navigator.clipboard.writeText(b.getAttribute("data-copy")).then(function () {
+    document.querySelectorAll("button.cp.done").forEach(function (x) { x.classList.remove("done"); x.textContent = "copy"; });
+    b.classList.add("done"); b.textContent = "copied";
+  });
+});
+</script>
+<script>
+// project pages: as the header scrolls away the photo slides left across the wordmark, and once
+// the header is gone a small "back to Kalam" mark appears top left
+(function () {
+  var back = document.querySelector(".back"), head = document.querySelector(".head.home");
+  if (!back || !head) return;
+  var photo = head.querySelector(".head-photo"), word = head.querySelector(".wordmark");
+  var still = window.matchMedia("(prefers-reduced-motion: reduce)");
+  var queued = false;
+  function update() {
+    queued = false;
+    var bottom = head.getBoundingClientRect().bottom, end = bottom + window.scrollY;
+    var p = Math.min(1, Math.max(0, window.scrollY / end));
+    photo.style.transform = still.matches ? "" : "translateX(" + (-p * word.offsetWidth).toFixed(1) + "px)";
+    back.classList.toggle("on", bottom < 0);
+  }
+  window.addEventListener("scroll", function () { if (!queued) { queued = true; requestAnimationFrame(update); } }, { passive: true });
+  window.addEventListener("resize", update);
+  update();
+})();
+</script>
+
+</body>
+</html>
