@@ -49,7 +49,7 @@
   cluster's CUDA, finding which node the job landed on, a free port, and a tunnel back to your
   laptop. Every time.</p>
 <p><code>sllm</code> does all of that. It sizes a job to the model's memory, sends it to whichever of
-  your clusters will start it soonest (using <a href="/docs/clusterscheduler/">rclust</a>),
+  your clusters will start it soonest (using <a href="/rclust/">rclust</a>),
   waits until the model is loaded, and forwards a port through your SSH connection. After that,
   anything that speaks the OpenAI API can use it:</p>
 <pre class="code lang-sh"><span class="ln"><span class="hl-cmd">sllm</span> prepare qwen-3-8b    <span class="hl-com"># start (or reuse) a job and wait for the model</span><button type="button" class="cp" data-copy="sllm prepare qwen-3-8b">copy</button></span><span class="ln"><span class="hl-cmd">sllm</span> proxy                <span class="hl-com"># http://localhost:8000/v1</span><button type="button" class="cp" data-copy="sllm proxy">copy</button></span></pre>
