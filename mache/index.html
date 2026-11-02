@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mâché · Kalam</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Grenze+Gotisch:wght@400..600&display=swap">
+  <link rel="icon" href="/static/icons/kalam.svg" type="image/svg+xml">
+  <link rel="icon" href="/static/icons/kalam-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="/static/css/style.css">
+  <style>.back:not(.on) { opacity: 0; visibility: hidden; }</style>
+</head>
+<body>
+
+
+
+<div class="page">
+  
+  <header class="head home">
+    <a class="wordmark" href="/">Kalam</a>
+    <img class="head-photo" src="/static/img/spider-wide.jpg" alt="">
+  </header>
+  
+  <a class="back" href="/" aria-label="Back to Kalam">
+    <span class="dot" style="background-image: url('/static/img/spider-wide.jpg')">
+      <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M9.5 3.5 5 8l4.5 4.5"/></svg></span>
+    <span class="back-word">Kalam</span>
+  </a>
+  
+
+  
+
+  
+    
+  
+
+  
+<div class="project-head">
+  <h1 class="title project">Mâché</h1>
+  <p class="sub">Write a LaTeX paper with an agent, and see what it changed.</p>
+  <p class="repo-link"><a href="https://github.com/narunraman/mache">Source on GitHub ↗</a></p>
+</div>
+
+<p>Asking an agent to tighten a section, or to answer a reviewer, is easy. Seeing what it did is not.
+  In a <code>.tex</code> file a paragraph is one long line, so <code>git diff</code> tells you the
+  whole paragraph changed when it was four words, and a paragraph it moved shows up as one deleted
+  and another added.</p>
+<p>Mâché is suggesting mode, the Google Docs kind, for a LaTeX paper in VS Code. The agent edits the
+  files however it likes. You see its edits as suggestions in place, talk about them in comment
+  threads it can read and answer, and nothing becomes part of the paper until you accept it.</p>
+
+<figure class="proof" aria-label="An illustration of a marked-up paragraph: removed words in red, added words in green, a commented phrase in yellow with its thread in the margin">
+  <div class="sheet">
+    <p>Thompson's lesson applies <del>here as well</del> <ins>to the checks themselves</ins>. A check performed by a tool you trust is only as trustworthy as that tool<del>, and the tools are many</del>.</p>
+    <p class="moved"><span class="moved-tag">moved from §4</span>An endpoint comparison needs something to compare against. We call the accepted output of a revision the <mark>golden rendering</mark><ins>, a term borrowed from golden-master testing</ins>.</p>
+  </div>
+  <div class="margin">
+    <div class="note-card">
+      <div class="who you">you</div>
+      <p>Is "golden rendering" a standard term?</p>
+      <div class="who agent">agent</div>
+      <p>Not in typesetting. I've said where it comes from.</p>
+      <div class="decision">✓ accept &amp; resolve</div>
+    </div>
+  </div>
+</figure>
+<p class="key"><span class="k-del">removed</span> <span class="k-add">added</span> <span class="k-note">commented</span> <span class="k-move">moved</span></p>
+
+<section class="section">
+  <h2>Install</h2>
+<pre class="code lang-sh"><span class="ln"><span class="hl-cmd">npm</span> install <span class="hl-flag">-g</span> <span class="hl-str">github:narunraman/mache</span><button type="button" class="cp" data-copy="npm install -g github:narunraman/mache">copy</button></span><span class="ln"><span class="hl-cmd">mache</span> setup    <span class="hl-com"># the VS Code extension</span><button type="button" class="cp" data-copy="mache setup">copy</button></span></pre>
+</section>
+
+<section class="section">
+  <h2>Use</h2>
+<pre class="code lang-sh"><span class="ln"><span class="hl-cmd">mache</span> start     <span class="hl-com"># in a paper: its current text becomes the accepted text</span><button type="button" class="cp" data-copy="mache start">copy</button></span></pre>
+  <p>Comment on anything with <code>Alt+M</code>, then ask your agent, in whatever chat you already use,
+    to go through your comments. It finds its way by running <code>mache</code>, which lists what's
+    waiting for it. Accept, reject or reply to what comes back, and when the round is done:</p>
+<pre class="code lang-sh"><span class="ln"><span class="hl-cmd">mache</span> commit    <span class="hl-com"># one commit of the text you accepted</span><button type="button" class="cp" data-copy="mache commit">copy</button></span></pre>
+</section>
+
+<section class="section">
+  <h2>What it keeps</h2>
+  <div class="rows two">
+    <div class="row"><span class="k">accepted text</span><span class="v">A copy of each file as you last accepted it. Anything that differs is a suggestion.</span></div>
+    <div class="row"><span class="k">threads</span><span class="v">Your comments and the agent's replies, attached to the words they're about or to an edit.</span></div>
+    <div class="row"><span class="k">history</span><span class="v">Every edit, accept, reject and reply, in a private git history that stays on your machine.</span></div>
+  </div>
+  <p class="grey">All of it lives in a <code>.review/</code> folder in the paper, out of git. Your repository only
+    ever sees one tidy commit per round, with a message drafted from what happened in it.</p>
+</section>
+
+
+  <footer class="foot">
+    <p>Photographs by Narun Raman.</p>
+  </footer>
+</div>
+<script>
+// copy one line of code; the button says "copied" until the next click elsewhere
+document.addEventListener("click", function (e) {
+  var b = e.target.closest && e.target.closest("button.cp");
+  if (!b) return;
+  navigator.clipboard.writeText(b.getAttribute("data-copy")).then(function () {
+    document.querySelectorAll("button.cp.done").forEach(function (x) { x.classList.remove("done"); x.textContent = "copy"; });
+    b.classList.add("done"); b.textContent = "copied";
+  });
+});
+</script>
+<script>
+// project pages: as the header scrolls away the photo slides left across the wordmark, and once
+// the header is gone a small "back to Kalam" mark appears top left
+(function () {
+  var back = document.querySelector(".back"), head = document.querySelector(".head.home");
+  if (!back || !head) return;
+  var photo = head.querySelector(".head-photo"), word = head.querySelector(".wordmark");
+  var still = window.matchMedia("(prefers-reduced-motion: reduce)");
+  var queued = false;
+  function update() {
+    queued = false;
+    var bottom = head.getBoundingClientRect().bottom, end = bottom + window.scrollY;
+    var p = Math.min(1, Math.max(0, window.scrollY / end));
+    photo.style.transform = still.matches ? "" : "translateX(" + (-p * word.offsetWidth).toFixed(1) + "px)";
+    back.classList.toggle("on", bottom < 0);
+  }
+  window.addEventListener("scroll", function () { if (!queued) { queued = true; requestAnimationFrame(update); } }, { passive: true });
+  window.addEventListener("resize", update);
+  update();
+})();
+</script>
+
+</body>
+</html>
